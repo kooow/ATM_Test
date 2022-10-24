@@ -10,7 +10,7 @@ namespace ATM_Test.Models
         [Key]
         public uint Unit { get; set; }
 
-        public long Quantity { get; set; }
+        public ulong Quantity { get; set; }
 
     }
 

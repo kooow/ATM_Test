@@ -1,4 +1,5 @@
 ﻿using ATM_Test.Models;
+using ATM_Test.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,9 +18,12 @@ namespace ATM_Test.Controllers
     {
         private readonly ILogger<DepositController> _logger;
 
-        public DepositController(ILogger<DepositController> logger)
+        private readonly IDepositService _depositService;
+
+        public DepositController(ILogger<DepositController> logger, IDepositService depositService)
         {
             _logger = logger;
+            _depositService = depositService;
         }
 
         private static bool IsValid(Dictionary<string, uint> dictionary)
@@ -48,7 +52,7 @@ namespace ATM_Test.Controllers
         }
 
         [HttpPost("deposit")]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ulong), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public ActionResult Deposit(Dictionary<string, uint> deposit)
         {
@@ -58,8 +62,11 @@ namespace ATM_Test.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            return Ok(new DepositResponse());
-        }
+            _depositService.Deposit(deposit);
 
+            ulong total = _depositService.CalculateTotal();
+
+            return Ok(total);
+        }
     }
 }
