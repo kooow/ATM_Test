@@ -1,6 +1,9 @@
 ﻿
 namespace ATM_Test.Models
 {
+    /// <summary>
+    /// címletek
+    /// </summary>
     public class Denomation : Enumeration
     {
         public static readonly Denomation Thousand = new(1000);

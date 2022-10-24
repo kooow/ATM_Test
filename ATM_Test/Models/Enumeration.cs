@@ -7,11 +7,11 @@ namespace ATM_Test.Models
 {
     public abstract class Enumeration : IComparable
     {
-        public uint Key { get; private set; }
+        public uint Unit { get; private set; }
 
-        protected Enumeration(uint key) => (Key) = (key);
+        protected Enumeration(uint unit) => (Unit) = (unit);
 
-        public override string ToString() => Key.ToString();
+        public override string ToString() => Unit.ToString();
 
         public static IEnumerable<T> GetAll<T>() where T : Enumeration =>
             typeof(T).GetFields(BindingFlags.Public |
@@ -28,12 +28,12 @@ namespace ATM_Test.Models
             }
 
             var typeMatches = GetType().Equals(obj.GetType());
-            var valueMatches = Key.Equals(otherValue.Key);
+            var valueMatches = Unit.Equals(otherValue.Unit);
 
             return typeMatches && valueMatches;
         }
 
-        public int CompareTo(object other) => Key.CompareTo(((Enumeration)other).Key);
+        public int CompareTo(object other) => Unit.CompareTo(((Enumeration)other).Unit);
 
     }
 
