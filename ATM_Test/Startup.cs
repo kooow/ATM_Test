@@ -1,4 +1,5 @@
 using ATM_Test.IoC;
+using ATM_Test.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -6,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
@@ -27,6 +27,10 @@ namespace ATM_Test
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddEntityFrameworkSqlite().AddDbContext<APIDbContext>();
+            
+            ContainerInitialize.Init(services, Configuration);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -58,8 +62,13 @@ namespace ATM_Test
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
             app.UseAuthorization();
+
+            using (var serviceScope = app.ApplicationServices.CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetService<APIDbContext>();
+                context.Database.EnsureCreated();
+            }
 
             app.UseEndpoints(endpoints =>
             {
