@@ -1,5 +1,5 @@
 ﻿
-namespace ATM_Test.Entities
+namespace ATM_Test.Models
 {
     public class Denomation : Enumeration
     {

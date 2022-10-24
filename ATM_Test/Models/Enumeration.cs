@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 
-namespace ATM_Test.Entities
+namespace ATM_Test.Models
 {
     public abstract class Enumeration : IComparable
     {
