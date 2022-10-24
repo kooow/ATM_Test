@@ -32,13 +32,13 @@ namespace ATM_Test.Controllers
                 return false;
             }
 
-            foreach (KeyValuePair<string, uint> denomAndQuantiy in dictionary)
+            foreach (KeyValuePair<string, uint> denomAndQuantity in dictionary)
             {
-                if (!denomationStrings.Contains(denomAndQuantiy.Key))
+                if (!denomationStrings.Contains(denomAndQuantity.Key))
                 {
                     return false;
                 }
-                else if (denomAndQuantiy.Value == 0)
+                else if (denomAndQuantity.Value == 0)
                 {
                     return false;
                 }
