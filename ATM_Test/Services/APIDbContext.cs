@@ -21,12 +21,29 @@ namespace ATM_Test.Services
             optionsBuilder.UseSqlite(apiDbContextConnectionString);
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        private static DepositModel[] GetDefaultDepositModels()
         {
-            modelBuilder.Entity<DepositModel>();
+            List<DepositModel> depositModels = new();
 
-            base.OnModelCreating(modelBuilder);
+            var denomations = Denomation.GetAll<Denomation>();
+
+            foreach (var denom in denomations)
+            {
+                DepositModel depositModel = new DepositModel()
+                {
+                    Unit = denom.Unit,
+                    Quantity = 0
+                };
+                depositModels.Add(depositModel);
+            }
+
+            return depositModels.ToArray();
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DepositModel>().HasData(GetDefaultDepositModels());
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
