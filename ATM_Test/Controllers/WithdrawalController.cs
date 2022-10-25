@@ -2,10 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ATM_Test.Controllers
 {
@@ -18,10 +15,13 @@ namespace ATM_Test.Controllers
 
         private readonly IDepositService _depositService;
 
-        public WithdrawalController(ILogger<WithdrawalController> logger, IDepositService depositService)
+        private readonly IWithdrawService _withdrawService;
+
+        public WithdrawalController(ILogger<WithdrawalController> logger, IDepositService depositService, IWithdrawService withdrawService)
         {
             _logger = logger;
             _depositService = depositService;
+            _withdrawService = withdrawService;
         }
 
         private static bool IsValid(ulong sum)
@@ -37,6 +37,7 @@ namespace ATM_Test.Controllers
         [HttpPost("withdrawal")]
         [ProducesResponseType(typeof(Dictionary<string, uint>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status503ServiceUnavailable)]
         public ActionResult Withdrawal(ulong sum)
         {
             bool valid = IsValid(sum);
@@ -45,7 +46,19 @@ namespace ATM_Test.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            return Ok(new Dictionary<string, uint>());
+            ulong total = _depositService.CalculateTotal();
+            if (sum > total)
+            {
+                return StatusCode(StatusCodes.Status503ServiceUnavailable);
+            }
+
+            var withdrawSolution = _withdrawService.Withdraw(sum);
+            if (withdrawSolution.Count == 0)
+            {
+                return StatusCode(StatusCodes.Status503ServiceUnavailable);
+            }
+
+            return Ok(withdrawSolution);
         }
     }
 }

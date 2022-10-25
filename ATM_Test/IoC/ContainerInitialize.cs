@@ -9,12 +9,13 @@ namespace ATM_Test.IoC
     {
         public static void Init(IServiceCollection services, IConfiguration config, bool testInit = false)
         {
-            SetupRepositories(services);
+            SetupServices(services);
         }
 
-        private static void SetupRepositories(IServiceCollection services)
+        private static void SetupServices(IServiceCollection services)
         {
             services.AddScoped<IDepositService, DepositService>();
+            services.AddScoped<IWithdrawService, WithdrawService>();
         }
     }
 }
