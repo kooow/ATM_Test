@@ -44,6 +44,7 @@ namespace ATM_Test
                         Email = "kovacsrobert@windowslive.com"
                     },
                 });
+                c.SchemaFilter<EndpointExampleSchemaFilter>();
             });
         }
 
