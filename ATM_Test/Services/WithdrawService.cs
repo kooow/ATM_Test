@@ -20,15 +20,15 @@ namespace ATM_Test.Services
 
             var modelsWhereQuantityNotZero = bankNotes.Where(dm => dm.Quantity > 0).OrderByDescending(dm => dm.Value);
 
-            foreach (var dp in modelsWhereQuantityNotZero)
+            foreach (var bankNote in modelsWhereQuantityNotZero)
             {
-                if (sum >= dp.Value)
+                if (sum >= bankNote.Value)
                 {
-                    var usedAmount = sum / dp.Value;
-                    if (usedAmount <= dp.Quantity) // we have enought
+                    var usedAmount = sum / bankNote.Value;
+                    if (usedAmount <= bankNote.Quantity) // we have enought
                     {
-                        sum -= (usedAmount * dp.Value);
-                        noteAndQuantityList.Add(dp.Value, usedAmount);
+                        sum -= (usedAmount * bankNote.Value);
+                        noteAndQuantityList.Add(bankNote.Value, usedAmount);
                     }
 
                     if (sum == 0) break;
