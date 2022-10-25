@@ -64,8 +64,16 @@ namespace ATM_Test.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            _depositService.Deposit(depositData);
-
+            try
+            {
+                _depositService.Deposit(depositData);
+            }
+            catch (OverflowException exception)
+            {
+                _logger.LogError(0, exception, "Error while add to Quantity", exception.Data);
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+            
             ulong total = _depositService.CalculateTotal();
 
             _logger.LogInformation("Deposit response: " + total);

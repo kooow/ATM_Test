@@ -1,4 +1,5 @@
 ﻿using ATM_Test.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,14 +23,23 @@ namespace ATM_Test.Services
 
         public void Deposit(Dictionary<string, uint> depositValues)
         {
-           var bankNotes = GetBankNotes();
+            var bankNotes = GetBankNotes();
 
-            foreach (KeyValuePair<string, uint> denomAndQuantity in depositValues)
+            try
             {
-                var denom = uint.Parse(denomAndQuantity.Key);
-                var model = bankNotes.FirstOrDefault(bn => bn.Value == denom);
-                // TODO: overflow check
-                model.Quantity += denomAndQuantity.Value;
+                foreach (KeyValuePair<string, uint> denomAndQuantity in depositValues)
+                {
+                    var denom = uint.Parse(denomAndQuantity.Key);
+                    var model = bankNotes.FirstOrDefault(bn => bn.Value == denom);
+                    checked
+                    {
+                        model.Quantity += denomAndQuantity.Value;
+                    }
+                }
+            }
+            catch (OverflowException)
+            {
+                throw;
             }
 
             _context.SaveChanges();
@@ -40,11 +50,7 @@ namespace ATM_Test.Services
             ulong total = 0;
 
             var bankNotes = GetBankNotes();
-
-            foreach (var note in bankNotes)
-            {
-                total += note.Value * note.Quantity;
-            }
+            bankNotes.ForEach(bn => total += bn.Value * bn.Quantity);
 
             return total;
         }
