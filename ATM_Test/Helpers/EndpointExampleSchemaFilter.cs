@@ -10,7 +10,7 @@ namespace ATM_Test.Helpers
     {
         public void Apply(OpenApiSchema schema, SchemaFilterContext context)
         {
-            // deposit
+            // deposit endpoint
             if (context.Type == typeof(Dictionary<string, uint>))
             {
                 schema.Example = new OpenApiObject()
@@ -19,11 +19,11 @@ namespace ATM_Test.Helpers
                     [Denomation.FiveThousand.Unit.ToString()] = new OpenApiString("3"),
                 };
             }
+            // withdraw endpoint
             else if (context.Type == typeof(ulong))
             {
                 schema.Example = new OpenApiLong(16000) { };
             }
-
         }
     }
 }

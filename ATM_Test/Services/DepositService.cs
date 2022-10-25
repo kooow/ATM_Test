@@ -4,12 +4,8 @@ using System.Linq;
 
 namespace ATM_Test.Services
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class DepositService : IDepositService
     {
-
         protected readonly APIDbContext _context;
 
         public DepositService(APIDbContext context)
@@ -20,9 +16,7 @@ namespace ATM_Test.Services
         private List<BankNote> GetBankNotes()
         {
             var denomationUnits = Denomation.GetAll<Denomation>().Select(d => d.Unit).ToList();
-
             var bankNotes = _context.Set<BankNote>().Where(bn => denomationUnits.Contains(bn.Value)).ToList();
-
             return bankNotes;
         }
 
@@ -55,5 +49,4 @@ namespace ATM_Test.Services
             return total;
         }
     }
-
 }

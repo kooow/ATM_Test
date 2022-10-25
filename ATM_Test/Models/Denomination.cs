@@ -1,5 +1,4 @@
-﻿
-namespace ATM_Test.Models
+﻿namespace ATM_Test.Models
 {
     /// <summary>
     /// címletek
@@ -14,5 +13,4 @@ namespace ATM_Test.Models
 
         public Denomation(uint key) : base(key) { }
     }
-
 }

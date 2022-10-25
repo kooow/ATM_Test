@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System.Linq;
 
-
 namespace ATM_Test
 {
     public class Startup
@@ -79,6 +78,5 @@ namespace ATM_Test
                 endpoints.MapControllers();
             });
         }
-
     }
 }

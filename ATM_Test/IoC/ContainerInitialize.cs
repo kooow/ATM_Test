@@ -1,5 +1,4 @@
-﻿
-using ATM_Test.Services;
+﻿using ATM_Test.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

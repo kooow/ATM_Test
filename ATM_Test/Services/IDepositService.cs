@@ -1,5 +1,4 @@
 ﻿
-using ATM_Test.Models;
 using System.Collections.Generic;
 
 namespace ATM_Test.Services
@@ -9,7 +8,5 @@ namespace ATM_Test.Services
         void Deposit(Dictionary<string, uint> depositValues);
 
         ulong CalculateTotal();
-
     }
-
 }

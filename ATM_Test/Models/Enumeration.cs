@@ -34,7 +34,5 @@ namespace ATM_Test.Models
         }
 
         public int CompareTo(object other) => Unit.CompareTo(((Enumeration)other).Unit);
-
     }
-
 }

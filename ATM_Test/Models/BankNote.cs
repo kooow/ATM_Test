@@ -11,7 +11,6 @@ namespace ATM_Test.Models
         public uint Value { get; set; }
 
         public ulong Quantity { get; set; }
-
     }
 
 }
