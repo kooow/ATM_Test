@@ -7,14 +7,14 @@ namespace ATM_Test.Helpers
 {
     public static class Helper
     {
-        public static void LogModels(List<DepositModel> models, ILogger logger)
+        public static void LogModels(List<BankNote> models, ILogger logger)
         {
             StringBuilder logBuilder = new StringBuilder();
             logBuilder.AppendLine("------- Database ------");
 
             foreach (var model in models)
             {
-                logBuilder.AppendLine(model.Unit.ToString() + " - quantity:" + model.Quantity.ToString());
+                logBuilder.AppendLine(model.Value.ToString() + " - quantity:" + model.Quantity.ToString());
             }
 
             logBuilder.Append("------- Database ------");

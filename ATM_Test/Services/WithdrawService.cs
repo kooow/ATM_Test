@@ -14,21 +14,21 @@ namespace ATM_Test.Services
             _context = context;
         }
 
-        private static Dictionary<uint, ulong> CalculatePossibleQuantities(List<DepositModel> depositModels, ulong sum)
+        private static Dictionary<uint, ulong> CalculatePossibleQuantities(List<BankNote> bankNotes, ulong sum)
         {
             Dictionary<uint, ulong> noteAndQuantityList = new();
 
-            var modelsWhereQuantityNotZero = depositModels.Where(dm => dm.Quantity > 0).OrderByDescending(dm => dm.Unit);
+            var modelsWhereQuantityNotZero = bankNotes.Where(dm => dm.Quantity > 0).OrderByDescending(dm => dm.Value);
 
             foreach (var dp in modelsWhereQuantityNotZero)
             {
-                if (sum >= dp.Unit)
+                if (sum >= dp.Value)
                 {
-                    var usedAmount = sum / dp.Unit;
+                    var usedAmount = sum / dp.Value;
                     if (usedAmount <= dp.Quantity) // we have enought
                     {
-                        sum -= (usedAmount * dp.Unit);
-                        noteAndQuantityList.Add(dp.Unit, usedAmount);
+                        sum -= (usedAmount * dp.Value);
+                        noteAndQuantityList.Add(dp.Value, usedAmount);
                     }
 
                     if (sum == 0) break;
@@ -47,15 +47,15 @@ namespace ATM_Test.Services
         {
             var denomationUnits = Denomation.GetAll<Denomation>().Select(d => d.Unit).ToList();
 
-            var depositModels = _context.Set<DepositModel>().Where(dm => denomationUnits.Contains(dm.Unit)).ToList();
+            var bankNotes = _context.Set<BankNote>().Where(bn => denomationUnits.Contains(bn.Value)).ToList();
 
-            var possibleUnitAndQuantites = CalculatePossibleQuantities(depositModels, sum);
+            var possibleUnitAndQuantites = CalculatePossibleQuantities(bankNotes, sum);
             if (possibleUnitAndQuantites.Count > 0) // we have a possible solution
             {
                 foreach (var unitAndQuantity in possibleUnitAndQuantites)
                 {
-                    var dm = depositModels.FirstOrDefault(dm => dm.Unit == unitAndQuantity.Key);
-                    dm.Quantity -= unitAndQuantity.Value;
+                    var bankNote = bankNotes.FirstOrDefault(bn => bn.Value == unitAndQuantity.Key);
+                    bankNote.Quantity -= unitAndQuantity.Value;
                 }
 
                 _context.SaveChanges();

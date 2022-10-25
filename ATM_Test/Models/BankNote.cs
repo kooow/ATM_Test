@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ATM_Test.Models
 {
-    [Table("DepositModel")]
-    public class DepositModel
+    [Table("BankNote")]
+    public class BankNote
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Key]
-        public uint Unit { get; set; }
+        public uint Value { get; set; }
 
         public ulong Quantity { get; set; }
 

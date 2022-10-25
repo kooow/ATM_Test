@@ -17,23 +17,23 @@ namespace ATM_Test.Services
             _context = context;
         }
 
-        private List<DepositModel> GetDepositModels()
+        private List<BankNote> GetBankNotes()
         {
             var denomationUnits = Denomation.GetAll<Denomation>().Select(d => d.Unit).ToList();
 
-            var depositModels = _context.Set<DepositModel>().Where(dm => denomationUnits.Contains(dm.Unit)).ToList();
+            var bankNotes = _context.Set<BankNote>().Where(bn => denomationUnits.Contains(bn.Value)).ToList();
 
-            return depositModels;
+            return bankNotes;
         }
 
         public void Deposit(Dictionary<string, uint> depositValues)
         {
-           var depositModels = GetDepositModels();
+           var bankNotes = GetBankNotes();
 
             foreach (KeyValuePair<string, uint> denomAndQuantity in depositValues)
             {
-                var unit = uint.Parse(denomAndQuantity.Key);
-                var model = depositModels.FirstOrDefault(dm => dm.Unit == unit);
+                var denom = uint.Parse(denomAndQuantity.Key);
+                var model = bankNotes.FirstOrDefault(bn => bn.Value == denom);
                 // TODO: overflow check
                 model.Quantity += denomAndQuantity.Value;
             }
@@ -45,16 +45,15 @@ namespace ATM_Test.Services
         {
             ulong total = 0;
 
-            var depositModels = GetDepositModels();
+            var bankNotes = GetBankNotes();
 
-            foreach (var depo in depositModels)
+            foreach (var note in bankNotes)
             {
-                total += depo.Unit * depo.Quantity;
+                total += note.Value * note.Quantity;
             }
 
             return total;
         }
-
     }
 
 }

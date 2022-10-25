@@ -8,7 +8,7 @@ namespace ATM_Test.Services
 {
     public class APIDbContext : DbContext
     {
-        public DbSet<DepositModel> DepositModels { get; set; }
+        public DbSet<BankNote> BankNotes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -21,28 +21,29 @@ namespace ATM_Test.Services
             optionsBuilder.UseSqlite(apiDbContextConnectionString);
         }
 
-        private static DepositModel[] GetDefaultDepositModels()
+        private static BankNote[] GetDefaultBankNotes()
         {
-            List<DepositModel> depositModels = new();
+            List<BankNote> bankNotes = new();
 
             var denomations = Denomation.GetAll<Denomation>();
 
             foreach (var denom in denomations)
             {
-                DepositModel depositModel = new DepositModel()
+                BankNote bankNote = new BankNote()
                 {
-                    Unit = denom.Unit,
+                    Value = denom.Unit,
                     Quantity = 0
                 };
-                depositModels.Add(depositModel);
+                bankNotes.Add(bankNote);
             }
 
-            return depositModels.ToArray();
+            return bankNotes.ToArray();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DepositModel>().HasData(GetDefaultDepositModels());
+            modelBuilder.Entity<BankNote>().HasData(GetDefaultBankNotes());
+
             base.OnModelCreating(modelBuilder);
         }
     }

@@ -69,9 +69,9 @@ namespace ATM_Test
                 context.Database.EnsureCreated();
 
                 var denomationUnits = Denomation.GetAll<Denomation>().Select(d => d.Unit).ToList();
-                var depositModels = context.Set<DepositModel>().Where(dm => denomationUnits.Contains(dm.Unit)).ToList();
+                var bankNotes = context.Set<BankNote>().Where(bn => denomationUnits.Contains(bn.Value)).ToList();
 
-                Helper.LogModels(depositModels, logger);
+                Helper.LogModels(bankNotes, logger);
             }
 
             app.UseEndpoints(endpoints =>
