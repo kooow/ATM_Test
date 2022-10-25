@@ -1,4 +1,5 @@
-﻿using ATM_Test.Models;
+﻿using ATM_Test.Helpers;
+using ATM_Test.Models;
 using ATM_Test.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -52,21 +53,23 @@ namespace ATM_Test.Controllers
         [HttpPost("deposit")]
         [ProducesResponseType(typeof(ulong), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public ActionResult Deposit(Dictionary<string, uint> deposit)
-        {
-            var lines = deposit.Select(kvp => kvp.Key + ": " + kvp.Value.ToString());
-            string dictionaryLog = string.Join(Environment.NewLine, lines);
-            _logger.LogInformation("Deposit endpoint - " + dictionaryLog);
+        public ActionResult Deposit(Dictionary<string, uint> depositData)
+        {   
+            _logger.LogInformation("Deposit request: " + Helper.DictionaryToLogString(depositData));
 
-            bool valid = IsValid(deposit);
+            bool valid = IsValid(depositData);
             if (!valid)
             {
+                _logger.LogInformation("Deposit response: " + nameof(StatusCodes.Status400BadRequest));
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            _depositService.Deposit(deposit);
+            _depositService.Deposit(depositData);
 
             ulong total = _depositService.CalculateTotal();
+
+            _logger.LogInformation("Deposit response: " + total);
+
             return Ok(total);
         }
     }
