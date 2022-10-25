@@ -1,17 +1,16 @@
 using ATM_Test.IoC;
+using ATM_Test.Models;
 using ATM_Test.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
 namespace ATM_Test
 {
@@ -27,9 +26,8 @@ namespace ATM_Test
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddEntityFrameworkSqlite().AddDbContext<APIDbContext>();
-            
+
             ContainerInitialize.Init(services, Configuration);
 
             services.AddControllers();
@@ -50,7 +48,7 @@ namespace ATM_Test
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -68,6 +66,8 @@ namespace ATM_Test
             {
                 var context = serviceScope.ServiceProvider.GetService<APIDbContext>();
                 context.Database.EnsureCreated();
+
+                LogDatabaseModels(context.Set<DepositModel>(), logger);
             }
 
             app.UseEndpoints(endpoints =>
@@ -75,5 +75,25 @@ namespace ATM_Test
                 endpoints.MapControllers();
             });
         }
+
+        private static void LogDatabaseModels(DbSet<DepositModel> models, ILogger<Startup> logger)
+        {
+            StringBuilder logBuilder = new StringBuilder();
+
+            var denomationUnits = Denomation.GetAll<Denomation>().Select(d => d.Unit).ToList();
+            var depositModels = models.Where(dm => denomationUnits.Contains(dm.Unit)).ToList();
+
+            logBuilder.AppendLine("------- Database ------");
+
+            foreach (var model in depositModels)
+            {
+                logBuilder.AppendLine(model.Unit.ToString() + " - quantity:" + model.Quantity.ToString());
+            }
+
+            logBuilder.Append("------- Database ------");
+
+            logger.LogInformation(logBuilder.ToString());
+        }
+
     }
 }
