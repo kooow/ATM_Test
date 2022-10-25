@@ -18,7 +18,7 @@ namespace ATM_Test.Services
         {
             Dictionary<uint, ulong> noteAndQuantityList = new();
 
-            var modelsWhereQuantityNotZero = depositModels.Where(dm => dm.Quantity > 0);
+            var modelsWhereQuantityNotZero = depositModels.Where(dm => dm.Quantity > 0).OrderByDescending(dm => dm.Unit);
 
             foreach (var dp in modelsWhereQuantityNotZero)
             {
@@ -30,6 +30,8 @@ namespace ATM_Test.Services
                         sum -= (usedAmount * dp.Unit);
                         noteAndQuantityList.Add(dp.Unit, usedAmount);
                     }
+
+                    if (sum == 0) break;
                 }
             }
             
