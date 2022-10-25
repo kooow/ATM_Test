@@ -6,11 +6,9 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ATM_Test.Controllers
 {
-
     [ApiController]
     [Route("api")]
     [Produces("application/json")]
@@ -56,6 +54,10 @@ namespace ATM_Test.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public ActionResult Deposit(Dictionary<string, uint> deposit)
         {
+            var lines = deposit.Select(kvp => kvp.Key + ": " + kvp.Value.ToString());
+            string dictionaryLog = string.Join(Environment.NewLine, lines);
+            _logger.LogInformation("Deposit endpoint - " + dictionaryLog);
+
             bool valid = IsValid(deposit);
             if (!valid)
             {
@@ -65,7 +67,6 @@ namespace ATM_Test.Controllers
             _depositService.Deposit(deposit);
 
             ulong total = _depositService.CalculateTotal();
-
             return Ok(total);
         }
     }

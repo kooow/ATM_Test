@@ -40,6 +40,8 @@ namespace ATM_Test.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status503ServiceUnavailable)]
         public ActionResult Withdrawal(ulong sum)
         {
+            _logger.LogInformation("Withdrawal endpoint - " + sum);
+
             bool valid = IsValid(sum);
             if (!valid)
             {
