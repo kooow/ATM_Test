@@ -1,41 +1,34 @@
 ﻿using ATM_Test.Models;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
 
-namespace ATM_Test.Helpers
+namespace ATM_Test.Helpers;
+
+/// <summary>
+/// Helper class for logging and converting dictionaries to strings.
+/// </summary>
+public static class Helper
 {
-    public static class Helper
+    private const string DatabaseLogHeaderAndFooter = "------- Database ------";
+
+    /// <summary>
+    /// Logs the details of BankNote entities to the provided logger.
+    /// </summary>
+    /// <param name="models">BankNote entities</param>
+    /// <param name="logger">Logger</param>
+    public static void LogModels(List<BankNote> models, ILogger logger)
     {
-        public static void LogModels(List<BankNote> models, ILogger logger)
+        var logBuilder = new StringBuilder();
+        logBuilder.AppendLine(DatabaseLogHeaderAndFooter);
+
+        foreach (var model in models)
         {
-            StringBuilder logBuilder = new StringBuilder();
-            logBuilder.AppendLine("------- Database ------");
-
-            foreach (var model in models)
-            {
-                logBuilder.AppendLine(model.Value.ToString() + " - quantity:" + model.Quantity.ToString());
-            }
-
-            logBuilder.Append("------- Database ------");
-
-            logger.LogInformation(logBuilder.ToString());
+            logBuilder.AppendLine($"{model.Value} - quantity: {model.Quantity}");
         }
 
-        public static string DictionaryToLogString(Dictionary<uint, ulong> dictionary)
-        {
-            var lines = dictionary.Select(kvp => kvp.Key + ": " + kvp.Value.ToString());
-            string dictionaryLog = string.Join(Environment.NewLine, lines);
-            return dictionaryLog;
-        }
+        logBuilder.Append(DatabaseLogHeaderAndFooter);
 
-        public static string DictionaryToLogString(Dictionary<string, uint> dictionary)
-        {
-            var lines = dictionary.Select(kvp => kvp.Key + ": " + kvp.Value.ToString());
-            string dictionaryLog = string.Join(Environment.NewLine, lines);
-            return dictionaryLog;
-        }
+        logger.LogInformation(logBuilder.ToString());
     }
 }
